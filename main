@@ -1,0 +1,24 @@
+#!/bin/bash
+#PBS -l nodes=1:ppn=8:dc2,walltime=0:08:00
+#PBS -N crop_reorient
+#PBS -V
+
+if [ $ENV == "IUHPC" ]; then
+   cd $PBS_O_WORKDIR
+   module load fsl
+fi
+
+rm -f t1.nii.gz
+rm -f finished
+
+fslreorient2std $(jq -r .t1 config.json) t1.nii.gz
+robustfov -i t1.nii.gz -r t1.nii.gz
+
+if [ -s t1.nii.gz ]
+then 
+     echo 0 > finished
+else
+	echo "crop/orientation Failed"
+	echo 1 > finished
+	exit 1
+fi
