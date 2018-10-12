@@ -11,7 +11,7 @@ rm -f t1.nii.gz
 
 export input_t1=$(jq -r .t1 config.json)
 
-cp $input_t1 .
+cp $input_t1 t1.nii.gz
 
 if [ $(jq -r .reorient config.json) == true ]; then
 	fslreorient2std t1.nii.gz t1.nii.gz
